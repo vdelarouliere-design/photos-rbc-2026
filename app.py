@@ -57,8 +57,10 @@ if picture is not None:
                         Params={'Bucket': BUCKET_NAME, 'Key': photo},
                         ExpiresIn=3600
                     )
-                    st.image(url)
-                    st.markdown(f"[📥 Télécharger cette photo en HD]({url})")
+                    # Affichage propre de l'image et de son lien de téléchargement
+                    st.image(url, use_container_width=True)
+                    st.markdown(f"[📥 Télécharger / Ouvrir cette photo en HD]({url})")
+                    st.markdown("---")
                     
         except Exception as e:
             st.error(f"Erreur : {e}")
