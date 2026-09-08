@@ -11,7 +11,7 @@ s3 = boto3.client('s3')
 rekognition = boto3.client('rekognition', region_name='eu-west-1')
 
 # --- DESIGN DU SITE ---
-st.title("📸 Retrouvez vos photos de mariage !")
+st.title("📸 Retrouvez vos photos du RBC !")
 st.write("Prenez un selfie pour que l'IA recherche les photos où vous apparaissez.")
 
 # --- CHARGEMENT DE LA MÉMOIRE ---
