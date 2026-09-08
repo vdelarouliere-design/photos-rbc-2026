@@ -12,6 +12,12 @@ rekognition = boto3.client('rekognition', region_name='eu-west-1')
 
 # --- DESIGN DU SITE ---
 st.title("📸 Retrouvez vos photos du RBC !")
+
+# Lien vers l'album global (optionnel)
+st.markdown("---")
+st.markdown("📂 **Envie de tout voir ?** [Cliquez ici pour accéder à l'album complet de toutes les photos](VOTRE_LIEN_ALBUM_ICI)")
+st.markdown("---")
+
 st.write("Prenez un selfie pour que l'IA recherche les photos où vous apparaissez.")
 
 # --- CHARGEMENT DE LA MÉMOIRE ---
@@ -52,15 +58,24 @@ if picture is not None:
                 st.success(f"🎉 Nous avons trouvé {len(photos_trouvees)} photos de vous !")
                 
                 for photo in photos_trouvees:
-                    url = s3.generate_presigned_url(
-                        'get_object',
-                        Params={'Bucket': BUCKET_NAME, 'Key': photo},
-                        ExpiresIn=3600
-                    )
-                    # Affichage propre de l'image et de son lien de téléchargement
-                    st.image(url, use_container_width=True)
-                    st.markdown(f"[📥 Télécharger / Ouvrir cette photo en HD]({url})")
-                    st.markdown("---")
+                    try:
+                        # Téléchargement direct en mémoire pour garantir l'affichage sans carré noir
+                        file_obj = s3.get_object(Bucket=BUCKET_NAME, Key=photo)
+                        img_bytes = file_obj['Body'].read()
+                        
+                        # Affichage propre en grand
+                        st.image(img_bytes, use_container_width=True)
+                        
+                        # Bouton de téléchargement natif
+                        st.download_button(
+                            label=f"📥 Télécharger {photo}",
+                            data=img_bytes,
+                            file_name=photo,
+                            mime="image/jpeg"
+                        )
+                        st.markdown("---")
+                    except Exception as ex:
+                        st.write(f"Impossible d'afficher la photo {photo}")
                     
         except Exception as e:
             st.error(f"Erreur : {e}")
