@@ -17,9 +17,10 @@ st.image("banniere.jpg", use_container_width=True)
 
 st.title("📸 Retrouvez vos photos du RBC !")
 
-# Lien vers l'album global Google Drive intégré
+# Liens vers les albums externes
 st.markdown("---")
-st.markdown("📂 **Envie de tout voir ?** [Cliquez ici pour accéder à l'album complet de toutes les photos](https://drive.google.com/drive/folders/1QdNRq2pdS6Bomqc2RyPfm4WSOj0Kf2Hw)")
+st.markdown("📂 **Envie de tout voir ?** [Cliquez ici pour accéder à l'album complet des photos](https://drive.google.com/drive/folders/1QdNRq2pdS6Bomqc2RyPfm4WSOj0Kf2Hw)")
+st.markdown("📸 **Photos du Photo Booth :** [Cliquez ici pour voir les photos du Photo Booth](https://fotoshare.co/e/IeOTr8yFbnBAiSJecCSUf)")
 st.markdown("---")
 
 st.write("Prenez un selfie pour que l'IA recherche les photos où vous apparaissez.")
