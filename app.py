@@ -11,9 +11,13 @@ s3 = boto3.client('s3')
 rekognition = boto3.client('rekognition', region_name='eu-west-1')
 
 # --- DESIGN DU SITE ---
+
+# Affichage de la bannière tout en haut
+st.image("banniere.jpg", use_container_width=True)
+
 st.title("📸 Retrouvez vos photos du RBC !")
 
-# Lien vers l'album global (optionnel)
+# Lien vers l'album global (remplacez VOTRE_LIEN_ALBUM_ICI si vous en avez un, sinon laissez tel quel)
 st.markdown("---")
 st.markdown("📂 **Envie de tout voir ?** [Cliquez ici pour accéder à l'album complet de toutes les photos](VOTRE_LIEN_ALBUM_ICI)")
 st.markdown("---")
@@ -59,14 +63,11 @@ if picture is not None:
                 
                 for photo in photos_trouvees:
                     try:
-                        # Téléchargement direct en mémoire pour garantir l'affichage sans carré noir
                         file_obj = s3.get_object(Bucket=BUCKET_NAME, Key=photo)
                         img_bytes = file_obj['Body'].read()
                         
-                        # Affichage propre en grand
                         st.image(img_bytes, use_container_width=True)
                         
-                        # Bouton de téléchargement natif
                         st.download_button(
                             label=f"📥 Télécharger {photo}",
                             data=img_bytes,
