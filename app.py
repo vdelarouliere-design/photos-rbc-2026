@@ -11,13 +11,9 @@ s3 = boto3.client('s3')
 rekognition = boto3.client('rekognition', region_name='eu-west-1')
 
 # --- DESIGN DU SITE ---
-
-# Affichage de la bannière tout en haut
 st.image("banniere.jpg", use_container_width=True)
-
 st.title("📸 Retrouvez vos photos du RBC !")
 
-# Liens vers les albums externes
 st.markdown("---")
 st.markdown("📂 **Envie de tout voir ?** [Cliquez ici pour accéder à l'album complet des photos](https://drive.google.com/drive/folders/1QdNRq2pdS6Bomqc2RyPfm4WSOj0Kf2Hw)")
 st.markdown("📸 **Photos du Photo Booth :** [Cliquez ici pour voir les photos du Photo Booth](https://fotoshare.co/e/IeOTr8yFbnBAiSJecCSUf)")
@@ -25,7 +21,6 @@ st.markdown("---")
 
 st.write("Prenez un selfie pour que l'IA recherche les photos où vous apparaissez.")
 
-# --- CHARGEMENT DE LA MÉMOIRE ---
 try:
     with open(MAPPING_FILE, 'r') as f:
         face_map = json.load(f)
@@ -33,7 +28,6 @@ except Exception:
     st.error("Erreur : Impossible de charger le fichier de correspondance des visages.")
     st.stop()
 
-# --- APPAREIL PHOTO ---
 picture = st.camera_input("Prenez un selfie")
 
 if picture is not None:
@@ -64,17 +58,16 @@ if picture is not None:
                 
                 for photo in photos_trouvees:
                     try:
-                        file_obj = s3.get_object(Bucket=BUCKET_NAME, Key=photo)
-                        img_bytes = file_obj['Body'].read()
-                        
-                        st.image(img_bytes, use_container_width=True)
-                        
-                        st.download_button(
-                            label=f"📥 Télécharger {photo}",
-                            data=img_bytes,
-                            file_name=photo,
-                            mime="image/jpeg"
+                        # Génération d'un lien sécurisé valide 1 heure (zéro charge mémoire pour le serveur)
+                        url = s3.generate_presigned_url(
+                            'get_object',
+                            Params={'Bucket': BUCKET_NAME, 'Key': photo},
+                            ExpiresIn=3600
                         )
+                        
+                        # Affichage direct via l'URL
+                        st.image(url, use_container_width=True)
+                        st.markdown(f"[📥 Télécharger cette photo en HD]({url})")
                         st.markdown("---")
                     except Exception as ex:
                         st.write(f"Impossible d'afficher la photo {photo}")
